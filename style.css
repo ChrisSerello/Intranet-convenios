@@ -1,4 +1,4 @@
-/* --- 1. Definições de Cores (Paleta Dark/Roxo Degradê) --- */
+
 :root {
     --bg-main-start: #1A1A2E;     /* Um roxo escuro bem discreto */
     --bg-main-end: #0F0F1A;       /* Quase preto, para um degrade suave */
@@ -9,7 +9,7 @@
     --text-secondary: #A0A0A0;    /* Texto secundário cinza */
     --border-color: #38385A;      /* Borda dos cards, um roxo mais profundo */
     --shadow-color: rgba(187, 134, 252, 0.2); /* Sombra roxa sutil */
-    --color-success: #3498DB;     /* Verde para 'copiado' */
+    --color-success: #3498DB;     /* azul no 'copiado' */
 }
 
 /* --- 2. Configurações Globais --- */

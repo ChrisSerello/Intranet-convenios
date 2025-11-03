@@ -66,9 +66,9 @@ function abrirModal(cidade, produtos) {
             });
 
             detailsDiv.appendChild(percentSpan);
-            // **** A CORREÇÃO ESTÁ AQUI ****
+            
             detailsDiv.appendChild(copyBtn); // Estava 'detailsDeta'
-            // *****************************
+            
             li.appendChild(infoDiv);
             li.appendChild(detailsDiv);
             
@@ -130,7 +130,7 @@ function renderizarCards(listaDePrefeituras) {
 }
 
 /**
- * Função central que aplica TODOS os filtros (busca e status) e chama a renderização.
+Função central que aplica TODOS os filtros (busca e status) e chama a renderização.
  */
 function aplicarFiltrosEBusca() {
     const searchTerm = searchBar.value.toLowerCase().trim();
@@ -142,7 +142,7 @@ function aplicarFiltrosEBusca() {
 
     if (searchTerm) {
         listaFiltrada = listaFiltrada.filter(pref => {
-            const cardText = `${pref.cidade} ${prefeitura.localizacao}`.toLowerCase();
+            const cardText = `${pref.cidade} ${pref.localizacao}`.toLowerCase();
             return cardText.includes(searchTerm);
         });
     }
