@@ -1,23 +1,27 @@
-/* --- 1. Definições de Cores (Paleta Dark/Roxo Anterior) --- */
+/* --- 1. Definições de Cores (Paleta Dark/Roxo Degradê) --- */
 :root {
-    --bg-main: #121212;           
-    --bg-surface: #1E1E1E;        
-    --color-brand: #BB86FC;       
-    --color-brand-subtle: rgba(187, 134, 252, 0.15); 
-    --text-primary: #E0E0E0;      
-    --text-secondary: #A0A0A0;    
-    --border-color: #333333;      
-    --shadow-color: rgba(187, 134, 252, 0.2); 
-    --color-success: #2ECC71; 
+    --bg-main-start: #1A1A2E;     /* Um roxo escuro bem discreto */
+    --bg-main-end: #0F0F1A;       /* Quase preto, para um degrade suave */
+    --bg-surface: #1E1E3A;        /* Superfícies dos cards, um pouco mais roxo que o bg */
+    --color-brand: #BB86FC;       /* O roxo vibrante principal */
+    --color-brand-subtle: rgba(187, 134, 252, 0.15); /* Roxo transparente para detalhes */
+    --text-primary: #E0E0E0;      /* Texto principal claro */
+    --text-secondary: #A0A0A0;    /* Texto secundário cinza */
+    --border-color: #38385A;      /* Borda dos cards, um roxo mais profundo */
+    --shadow-color: rgba(187, 134, 252, 0.2); /* Sombra roxa sutil */
+    --color-success: #3498DB;     /* Verde para 'copiado' */
 }
 
 /* --- 2. Configurações Globais --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-main);
+    /* NOVO: Degradê no fundo do body */
+    background: linear-gradient(135deg, var(--bg-main-start), var(--bg-main-end));
+    background-attachment: fixed; /* Garante que o degrade não se mova com a rolagem */
     color: var(--text-primary);
     margin: 0;
     padding: 24px;
+    min-height: 100vh; /* Garante que o degrade cubra a tela toda */
 }
 
 h1, h2, h3 {
@@ -33,15 +37,15 @@ h1, h2, h3 {
     margin-bottom: 15px;
 }
 
-/* ESTILO ATUALIZADO PARA A IMAGEM DA LOGO (max-height alterado) */
+/* ESTILO DA LOGO */
 .header-logo img {
-    max-height: 500px; /* Aumentado de 50px para 70px */
+    max-height: 70px;
     width: auto;
-    filter: drop-shadow(0 0 10px rgba(187, 134, 252, 0.6)); 
-    transition: filter 0.3s ease; 
+    filter: drop-shadow(0 0 10px rgba(187, 134, 252, 0.6));
+    transition: filter 0.3s ease;
 }
 .header-logo img:hover {
-    filter: drop-shadow(0 0 15px rgba(187, 134, 252, 0.8)); 
+    filter: drop-shadow(0 0 15px rgba(187, 134, 252, 0.8));
 }
 
 .container-header h1 {
@@ -154,12 +158,12 @@ h1, h2, h3 {
     text-transform: uppercase;
 }
 .status-ativo {
-    background-color: #2ECC71;
-    color: #121212;
+    background-color: var(--color-success); /* Usando o verde para ativo */
+    color: var(--bg-main-end); /* Texto escuro no badge verde */
 }
 .status-inativo {
-    background-color: #7F8C8D;
-    color: #1E1E1E;
+    background-color: #7F8C8D; /* Cinza para inativo */
+    color: var(--bg-main-end); /* Texto escuro no badge cinza */
 }
 .card.ativo {
     cursor: pointer;
@@ -167,7 +171,7 @@ h1, h2, h3 {
 .card.ativo:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 15px var(--shadow-color);
-    border-color: var(--color-brand);
+    border-color: var(--color-brand); /* Borda fica roxa no hover */
 }
 .card.ativo:hover .card-header h3 {
     color: var(--color-brand);
@@ -175,7 +179,7 @@ h1, h2, h3 {
 .card.inativo {
     opacity: 0.6;
     cursor: not-allowed;
-    background-color: #202122;
+    background-color: #202138; /* Um fundo um pouco mais escuro para inativos */
 }
 .card.inativo .card-header h3 {
     color: var(--text-secondary);
@@ -277,7 +281,7 @@ h1, h2, h3 {
 }
 .copy-btn.copied {
     background-color: var(--color-success);
-    color: var(--bg-main);
+    color: var(--bg-main-end); /* Texto escuro quando copiado */
 }
 
 @keyframes fadeIn {
