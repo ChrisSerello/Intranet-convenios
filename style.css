@@ -1,4 +1,4 @@
-
+/* --- 1. Definições de Cores (Paleta Dark/Roxo Degradê) --- */
 :root {
     --bg-main-start: #1A1A2E;     /* Um roxo escuro bem discreto */
     --bg-main-end: #0F0F1A;       /* Quase preto, para um degrade suave */
@@ -9,19 +9,18 @@
     --text-secondary: #A0A0A0;    /* Texto secundário cinza */
     --border-color: #38385A;      /* Borda dos cards, um roxo mais profundo */
     --shadow-color: rgba(187, 134, 252, 0.2); /* Sombra roxa sutil */
-    --color-success: #3498DB;     /* azul no 'copiado' */
+    --color-success: #3498DB;     /* Verde para 'copiado' */
 }
 
 /* --- 2. Configurações Globais --- */
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    /* NOVO: Degradê no fundo do body */
     background: linear-gradient(135deg, var(--bg-main-start), var(--bg-main-end));
-    background-attachment: fixed; /* Garante que o degrade não se mova com a rolagem */
+    background-attachment: fixed; 
     color: var(--text-primary);
     margin: 0;
     padding: 24px;
-    min-height: 100vh; /* Garante que o degrade cubra a tela toda */
+    min-height: 100vh; 
 }
 
 h1, h2, h3 {
@@ -36,8 +35,6 @@ h1, h2, h3 {
 .header-logo {
     margin-bottom: 15px;
 }
-
-/* ESTILO DA LOGO */
 .header-logo img {
     max-height: 70px;
     width: auto;
@@ -47,7 +44,6 @@ h1, h2, h3 {
 .header-logo img:hover {
     filter: drop-shadow(0 0 15px rgba(187, 134, 252, 0.8));
 }
-
 .container-header h1 {
     color: var(--color-brand);
     margin-top: 0;
@@ -158,12 +154,12 @@ h1, h2, h3 {
     text-transform: uppercase;
 }
 .status-ativo {
-    background-color: var(--color-success); /* Usando o verde para ativo */
-    color: var(--bg-main-end); /* Texto escuro no badge verde */
+    background-color: var(--color-success);
+    color: var(--bg-main-end); 
 }
 .status-inativo {
-    background-color: #7F8C8D; /* Cinza para inativo */
-    color: var(--bg-main-end); /* Texto escuro no badge cinza */
+    background-color: #7F8C8D;
+    color: var(--bg-main-end);
 }
 .card.ativo {
     cursor: pointer;
@@ -171,7 +167,7 @@ h1, h2, h3 {
 .card.ativo:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 15px var(--shadow-color);
-    border-color: var(--color-brand); /* Borda fica roxa no hover */
+    border-color: var(--color-brand);
 }
 .card.ativo:hover .card-header h3 {
     color: var(--color-brand);
@@ -179,7 +175,7 @@ h1, h2, h3 {
 .card.inativo {
     opacity: 0.6;
     cursor: not-allowed;
-    background-color: #202138; /* Um fundo um pouco mais escuro para inativos */
+    background-color: #202138;
 }
 .card.inativo .card-header h3 {
     color: var(--text-secondary);
@@ -281,10 +277,47 @@ h1, h2, h3 {
 }
 .copy-btn.copied {
     background-color: var(--color-success);
-    color: var(--bg-main-end); /* Texto escuro quando copiado */
+    color: var(--bg-main-end);
 }
 
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+/* --- 10. Estilo do Botão Roteiro (NOVO) --- */
+.btn-roteiro {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px; /* Espaço acima do botão */
+    background-color: var(--color-brand);
+    color: var(--text-primary);
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid var(--color-brand);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+}
+
+.btn-roteiro:hover {
+    background-color: transparent;
+    color: var(--color-brand);
+}
+
+/* --- Ajuste no Filtro Container Principal --- */
+.filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px; /* Reduzido de 30px para ficar mais perto do próximo */
+    flex-wrap: wrap; /* Permite que os botões quebrem a linha */
+}
+
+/* --- Estilo para o Segundo Container de Filtro --- */
+#product-filter-container {
+    margin-bottom: 30px; /* Espaçamento final antes dos cards */
 }

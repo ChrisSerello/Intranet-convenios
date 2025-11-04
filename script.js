@@ -1,28 +1,45 @@
 // === COLOQUE SUAS CHAVES DO SUPABASE AQUI ===
 const SUPABASE_URL = 'https://csxoqhmypqqnaanlxfxo.supabase.co'; // JÁ PREENCHIDO
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzeG9xaG15cHFxbmFhbmx4ZnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDA4NjQsImV4cCI6MjA3NzY3Njg2NH0.9k9MUOLFfA-QOENMemdB1RhVE6fM-HAeYthuDdzX_II'; // COLE SUA CHAVE AQUI
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzeG9xaG15cHFxbmFhbmx4ZnhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMDA4NjQsImV4cCI6MjA3NzY3Njg2NH0.9k9MUOLFfA-QOENMemdB1RhVE6fM-HAeYthuDdzX_II'; // JÁ PREENCHIDO
 // ============================================
 
 // === VARIÁVEIS GLOBAIS ===
+
 let dadosPrefeituras = [];
 let currentStatusFilter = "todos"; 
+let currentProductFilter = "todos"; // <-- NOVO: Variável para o filtro de produto
 
 // --- Pegar os Elementos da Página (DOM) ---
 const modal = document.getElementById("infoModal");
 const modalCityName = document.getElementById("modal-city-name");
 const modalProductList = document.getElementById("modal-product-list");
+const modalBody = document.querySelector(".modal-body");
 const closeBtn = document.querySelector(".close-btn");
 const gridContainer = document.getElementById("city-grid");
 const searchBar = document.getElementById("search-bar");
 const noResultsMsg = document.getElementById("no-results");
-const filterContainer = document.getElementById("filter-container");
+const statusFilterContainer = document.getElementById("status-filter-container"); // <-- MUDANÇA DE NOME
+const productFilterContainer = document.getElementById("product-filter-container"); // <-- NOVO: Container do filtro de produto
 
 // === FUNÇÕES ===
 
 /**
- * Abre o modal com os detalhes do convênio e cria os botões de "Copiar".
+ * Abre o modal com os detalhes do convênio e cria os botões de "Copiar" e "Roteiro". (MODIFICADO)
  */
-function abrirModal(cidade, produtos) {
+function abrirModal(prefeitura) { // <- MUDANÇA: Recebe o objeto 'prefeitura'
+    
+    // Limpa o botão de roteiro de um clique anterior
+    const oldRoteiroBtn = document.getElementById("btn-roteiro");
+    if (oldRoteiroBtn) {
+        oldRoteiroBtn.remove();
+    }
+
+    // Pega os dados do objeto
+    const cidade = prefeitura.cidade;
+    const produtos = prefeitura.produtos;
+    const linkRoteiro = prefeitura.Roteiro; 
+
+    // Preenche título e produtos
     modalCityName.textContent = cidade;
     modalProductList.innerHTML = ""; 
 
@@ -66,14 +83,25 @@ function abrirModal(cidade, produtos) {
             });
 
             detailsDiv.appendChild(percentSpan);
-            
-            detailsDiv.appendChild(copyBtn); // Estava 'detailsDeta'
-            
+            detailsDiv.appendChild(copyBtn);
             li.appendChild(infoDiv);
             li.appendChild(detailsDiv);
             
             modalProductList.appendChild(li);
         });
+    }
+
+    // NOVO: CRIA E ADICIONA O BOTÃO DO ROTEIRO (se o link existir)
+    if (linkRoteiro) {
+        const roteiroBtn = document.createElement("a");
+        roteiroBtn.id = "btn-roteiro";
+        roteiroBtn.className = "btn-roteiro";
+        roteiroBtn.href = linkRoteiro;
+        roteiroBtn.target = "_blank"; // Abre em nova aba
+        roteiroBtn.textContent = "Ver Roteiro (PDF)";
+        
+        // Adiciona o botão ao final do corpo do modal
+        modalBody.appendChild(roteiroBtn);
     }
     
     modal.style.display = "block";
@@ -87,7 +115,7 @@ function fecharModal() {
 }
 
 /**
- * Renderiza os cards na tela com base em uma lista filtrada.
+ * Renderiza os cards na tela com base em uma lista filtrada. (MODIFICADO)
  */
 function renderizarCards(listaDePrefeituras) {
     gridContainer.innerHTML = ""; 
@@ -102,7 +130,7 @@ function renderizarCards(listaDePrefeituras) {
         noResultsMsg.style.display = "none";
     }
 
-    prefeiturasOrdenadas.forEach(prefeitura => {
+    prefeiturasOrdenadas.forEach(prefeitura => { // 'prefeitura' é o objeto completo
         const card = document.createElement("div");
         const isAtivo = prefeitura.status === "Ativo";
         const statusClass = isAtivo ? "status-ativo" : "status-inativo";
@@ -120,8 +148,9 @@ function renderizarCards(listaDePrefeituras) {
         `;
 
         if (isAtivo) {
+            // MUDANÇA: Passa o objeto 'prefeitura' inteiro
             card.addEventListener("click", () => {
-                abrirModal(prefeitura.cidade, prefeitura.produtos);
+                abrirModal(prefeitura);
             });
         }
         
@@ -130,18 +159,30 @@ function renderizarCards(listaDePrefeituras) {
 }
 
 /**
-Função central que aplica TODOS os filtros (busca e status) e chama a renderização.
+ * Aplica todos os filtros (busca e status) e chama a renderização
  */
 function aplicarFiltrosEBusca() {
     const searchTerm = searchBar.value.toLowerCase().trim();
     let listaFiltrada = dadosPrefeituras;
 
+    // 1. Aplicar filtro de STATUS (Ativo/Inativo)
     if (currentStatusFilter !== "todos") {
         listaFiltrada = listaFiltrada.filter(pref => pref.status === currentStatusFilter);
     }
 
+    // NOVO: 2. Aplicar filtro de PRODUTO (DIGI+, etc)
+    if (currentProductFilter !== "todos") {
+        listaFiltrada = listaFiltrada.filter(pref => {
+            // Verifica se a string 'localizacao' (ex: "Bauru - SP - STARCARD") contém o filtro
+            // O '?' (optional chaining) evita erros se 'localizacao' for nulo (vazio)
+            return pref.localizacao?.includes(currentProductFilter);
+        });
+    }
+
+    // 3. Aplicar filtro de BUSCA
     if (searchTerm) {
         listaFiltrada = listaFiltrada.filter(pref => {
+            // O '?' protege contra 'localizacao' nulo aqui também
             const cardText = `${pref.cidade} ${pref.localizacao}`.toLowerCase();
             return cardText.includes(searchTerm);
         });
@@ -153,7 +194,7 @@ function aplicarFiltrosEBusca() {
 
 // === EVENT LISTENERS (Onde a mágica acontece) ===
 
-// 1. Ponto de Entrada: Carregar Dados da API (MODIFICADO PARA SUPABASE)
+// 1. Ponto de Entrada: Carregar Dados da API
 document.addEventListener("DOMContentLoaded", () => {
     
     // Verifica se as chaves foram preenchidas
@@ -165,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return; 
     }
 
-    // Este fetch busca todas as prefeituras E seus produtos relacionados de uma só vez
+    // Este fetch (select=*) já busca a nova coluna 'link_roteiro' automaticamente
     fetch(`${SUPABASE_URL}/rest/v1/Prefeituras?select=*,Produtos(*)`, {
         headers: {
             'apikey': SUPABASE_KEY,
@@ -208,14 +249,33 @@ window.addEventListener("click", (event) => {
 // 3. Listener da Barra de Busca
 searchBar.addEventListener("keyup", aplicarFiltrosEBusca);
 
-// 4. Listeners dos Botões de Filtro
-filterContainer.addEventListener("click", (event) => {
+// 4. Listeners dos Botões de Filtro de STATUS (ID Atualizado)
+statusFilterContainer.addEventListener("click", (event) => {
     if (event.target.classList.contains("filter-btn")) {
-        filterContainer.querySelectorAll(".filter-btn").forEach(btn => {
+        // Remove 'active' apenas dos botões deste grupo
+        statusFilterContainer.querySelectorAll(".filter-btn").forEach(btn => {
             btn.classList.remove("active");
         });
         event.target.classList.add("active");
+        
         currentStatusFilter = event.target.dataset.filter;
+        aplicarFiltrosEBusca();
+    }
+});
+
+// 5. Listeners dos Botões de Filtro de PRODUTO (NOVO)
+productFilterContainer.addEventListener("click", (event) => {
+    if (event.target.classList.contains("filter-btn")) {
+        // Remove 'active' apenas dos botões deste grupo
+        productFilterContainer.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.classList.remove("active");
+        });
+        event.target.classList.add("active");
+        
+        // Atualiza a nova variável de filtro
+        currentProductFilter = event.target.dataset.filter;
+        
+        // Aplica todos os filtros e rerenderiza
         aplicarFiltrosEBusca();
     }
 });
