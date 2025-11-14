@@ -321,3 +321,27 @@ h1, h2, h3 {
 #product-filter-container {
     margin-bottom: 30px; /* Espaçamento final antes dos cards */
 }
+
+
+
+/* 11. Infos Extras do Modal (Corte/Repasse) */
+.modal-info-extra {
+    padding-bottom: 20px; /* Espaço antes da lista de produtos */
+    margin-bottom: 20px; 
+    border-bottom: 1px solid var(--border-color); /* Separador */
+}
+
+.modal-info-extra p {
+    font-size: 0.95em;
+    color: var(--text-secondary);
+    margin: 0 0 10px 0; /* Espaçamento entre as linhas */
+}
+
+.modal-info-extra p:last-child {
+    margin-bottom: 0;
+}
+
+.modal-info-extra p strong {
+    color: var(--text-primary); /* Destaca o "Data de Corte:" */
+    margin-right: 5px;
+}
